@@ -1,27 +1,41 @@
 <template>
   <div class="list">
-    <div class="tips" v-for="(item,index) in list" :key="index">
-      <div v-if="item.status==='0'">
-        <router-link
-          :to="{name:'detail',query:{
+    <mt-loadmore
+      :top-method="loadTop"
+      :bottom-all-loaded="allLoaded"
+      :max-distance="100"
+      @top-status-change="handleTopChange"
+      ref="loadmore"
+    >
+      <div slot="top" class="mint-loadmore-top">
+        <span v-show="topStatus === 'pull'" :class="{ 'rotate': topStatus === 'drop' }">↓</span>
+        <span v-show="topStatus === 'loading'">Loading...</span>
+        <span v-show="topStatus === 'drop'">释放更新</span>
+      </div>
+
+      <div class="tips" v-for="(item,index) in list" :key="index">
+        <div v-if="item.status==='0'">
+          <router-link
+            :to="{name:'detail',query:{
                 title:item.title,content:item.content,time:item.time,author:item.author,img:item.img,
             }}"
-        >
-          <div class="info">
-            <div class="left">新闻</div>
-            <div class="right">{{ item.status_DISPLAY }}</div>
-          </div>
-          <div class="con">
-            <div class="yuan"></div>
-            <div class="titl">{{ item.title }}</div>
-          </div>
-          <div class="au">
-            <div class="author">{{ item.author }}</div>
-            <div class="time">{{ item.time }}</div>
-          </div>
-        </router-link>
+          >
+            <div class="info">
+              <div class="left">新闻</div>
+              <div class="right">{{ item.status_DISPLAY }}</div>
+            </div>
+            <div class="con">
+              <div class="yuan"></div>
+              <div class="titl">{{ item.title }}</div>
+            </div>
+            <div class="au">
+              <div class="author">{{ item.author }}</div>
+              <div class="time">{{ item.time }}</div>
+            </div>
+          </router-link>
+        </div>
       </div>
-    </div>
+    </mt-loadmore>
   </div>
 </template>
 <script>
@@ -30,12 +44,27 @@ export default {
   data() {
     return {
       list: [],
-      array: []
+      array: [],
+      allLoaded: false,
+      topStatus: ""
     };
   },
-  methods: {},
+  methods: {
+ loadTop: function() {
+      // 刷新数据的操作
+      setTimeout(() => {
+       
+       
+        this.$refs.loadmore.onTopLoaded();
+      }, 1500);
+    },
+
+    handleTopChange: function(status) {
+      this.topStatus = status;
+    }
+
+  },
   mounted() {
-    
     this.$axios
       .get("static/data.json")
       .then(res => {
@@ -43,31 +72,30 @@ export default {
           console.log("成功");
           //    console.log(res.data.result)
           this.list = res.data.result;
-          var data=new Data();
-          var year =data.getFullYear();
-          $.each(this.list,function(index,value){
-            var arr=value.time.split("");
-            var arr2=arr[0].split("-");
-            if(arr2.length<3){
+          var data = new Data();
+          var year = data.getFullYear();
+          $.each(this.list, function(index, value) {
+            var arr = value.time.split("");
+            var arr2 = arr[0].split("-");
+            if (arr2.length < 3) {
               arr2.unshift(year);
             }
-            var arryear=arr2.join("-");
-            var arrdate=arryear.concat("",arr[1]);
-            value.time=arrdate;
-          })
+            var arryear = arr2.join("-");
+            var arrdate = arryear.concat("", arr[1]);
+            value.time = arrdate;
+          });
           var array = this.list.sort(function(a, b) {
             return b["time"] < a["time"] ? 1 : -1;
           });
-         
-         array = array.reverse();
-          this.list=array;
-          $.each(this.list,function(index,value){
-            var str=value.time;
-            if(str.substring(0,4)==year){
-              value.time=str.substring(5,str.length);
-            }
-          })
 
+          array = array.reverse();
+          this.list = array;
+          $.each(this.list, function(index, value) {
+            var str = value.time;
+            if (str.substring(0, 4) == year) {
+              value.time = str.substring(5, str.length);
+            }
+          });
         }
       })
       .catch(error => {

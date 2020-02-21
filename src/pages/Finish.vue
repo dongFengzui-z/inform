@@ -70,12 +70,12 @@ export default {
       // 刷新数据的操作
       setTimeout(() => {
         //  console.log(this.list[0])
-        var _this = this;
-        let firstValue = _this.list[0];
-        console.log(this.list[0]);
-        for (let i = 1; i <= 10; i++) {
-          this.list.unshift(firstValue - i);
-        }
+        // var _this = this;
+        // let firstValue = _this.list[0];
+        // console.log(this.list[0]);
+        // for (let i = 1; i <= 5; i++) {
+        //   this.list.unshift(firstValue - i);
+        // }
         this.$refs.loadmore.onTopLoaded();
       }, 1500);
     },
