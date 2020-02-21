@@ -12,16 +12,17 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'main',
       redirect: '/finish',
       component: Main,
 
       children: [
         {
+          name:"finish",
           path: "/finish",
           component: Finish
         },
         {
+          name:"unread",
           path: "/unread",
           component: Unread
         },
@@ -43,6 +44,6 @@ export default new Router({
       path: '/search',
       name: "search",
       component: Search
-    }
+    },
   ]
 })

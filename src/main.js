@@ -8,9 +8,12 @@ import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+
 import App from './App'
+
 Vue.use(MintUI)
 Vue.use(ElementUI)
+
 
 Vue.prototype.$axios=Axios;
 Vue.prototype.Image="/image_api"

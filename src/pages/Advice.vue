@@ -1,9 +1,9 @@
 <template>
   <div>
     <mt-header title="意见反馈">
-      <router-link to="/detail" slot="left">
-        <mt-button>X</mt-button>
-      </router-link>
+      <!-- <router-link to="/detail" slot="left">
+        X
+      </router-link> -->
     </mt-header>
     <img src="../assets/advice.png" alt />
     <form action="post">
@@ -31,17 +31,17 @@
         <div class="addp">
           <div class="addpt">添加图片（可选）</div>
           <el-upload
-            action="/"
-            list-type="picture-card"
-            :on-preview="handlePictureCardPreview"
-            :on-remove="handleRemove"
+            class="avatar-uploader"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
           >
-            <i class="el-icon-plus"></i>
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
-          <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt />
-          </el-dialog>
         </div>
+        <h3>图片的格式为{{ type }}   图片的大小为{{ size }}M</h3>
       </div>
       <div class="btn">
         <mt-button type="primary" size="large">确认提交</mt-button>
@@ -50,17 +50,15 @@
   </div>
 </template>
 <script>
-import { Header } from "mint-ui";
-import { Button } from "mint-ui";
-
 export default {
   name: "advice",
   data() {
     return {
       remnant: 0,
-      desc: "",
-      dialogImageUrl: "",
-      dialogVisible: false
+      desc:"",
+      imageUrl:"",
+      size:"",
+      type:""
     };
   },
   methods: {
@@ -68,13 +66,27 @@ export default {
       var txtVal = this.desc.length;
       this.remnant = txtVal;
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+      
     },
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
-    }
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      this.type=file.type;
+      this.size=file.size/1024/1024
+      console.log("图片的格式为"+file.type)
+      console.log("图片的大小为"+file.size/1024/1024+"M")
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    },
+  
   }
 };
 </script>
@@ -135,9 +147,27 @@ textarea {
 }
 </style>
 <style >
-.el-upload--picture-card {
-  width: 50px;
-  height: 50px;
-  line-height: 60px;
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 78px;
+  height: 78px;
+  line-height: 78px;
+  text-align: center;
+}
+.avatar {
+  width: 78px;
+  height: 78px;
+  display: block;
 }
 </style>

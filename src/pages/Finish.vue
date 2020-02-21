@@ -1,25 +1,25 @@
 <template>
   <div class="list">
-    <div class="tips" v-for="(item,index) in array" :key="index">
+    <div class="tips" v-for="(item,index) in array" :key="item.title" @click="showDetail(index)">
       <div v-if="item.status==='1'">
-        <router-link
-          :to="{name:'detail',params:{
+        <!-- <router-link
+            :to="{name:'detail',query:{
                 title:item.title,content:item.content,time:item.time,author:item.author,img:item.img,
             }}"
-        >
-          <div class="info">
-            <div class="left">新闻</div>
-            <div class="right">{{ item.status_DISPLAY }}</div>
-          </div>
-          <div class="con">
-            <div class="yuan"></div>
-            <div class="titl">{{ item.title }}</div>
-          </div>
-          <div class="au">
-            <div class="author">{{ item.author }}</div>
-            <div class="time">{{ item.time }}</div>
-          </div>
-        </router-link>
+        >-->
+        <div class="info">
+          <div class="left">新闻</div>
+          <div class="right">{{ item.status_DISPLAY }}</div>
+        </div>
+        <div class="con">
+          <div class="yuan"></div>
+          <div class="titl">{{ item.title }}</div>
+        </div>
+        <div class="au">
+          <div class="author">{{ item.author }}</div>
+          <div class="time">{{ item.time }}</div>
+        </div>
+        <!-- </router-link> -->
       </div>
     </div>
   </div>
@@ -33,7 +33,22 @@ export default {
       array: []
     };
   },
-  methods: {},
+  methods: {
+    showDetail(index) {
+      this.$router.push({
+        path: "/detail",
+        query: {
+          title: this.list[index].title,
+          content: this.list[index].content,
+          time: this.list[index].time,
+          author: this.list[index].author,
+          img: this.list[index].img
+        }
+      });
+      // console.log(this.list[index].title)
+    }
+  },
+
   mounted() {
     this.$axios
       .get("static/data.json")
@@ -49,14 +64,16 @@ export default {
         }
       })
       .catch(error => {
-        console.log("失败")
+        // console.log("失败");
       });
   }
 };
 </script>
-<style scoped>
+<style  scoped>
 .list {
   background-color: #ffffff;
+  position: relative;
+  margin-top: -12px;
 }
 .tips {
   background-color: #ffffff;

@@ -1,18 +1,18 @@
 <template>
   <div class="detail">
     <div class="content">
-      <div class="title">{{this.$route.params.title }}</div>
+      <div class="title">{{this.$route.query.title}}</div>
       <div class="info">
         <img :src="img" />
         <div class="ti">
           <div class="hqw">环球网</div>
           <div class="ta">
-            <div class="time">{{this.$route.params.time }}</div>
-            <div class="author">{{this.$route.params.author}}</div>
+            <div class="time">{{this.$route.query.time }}</div>
+            <div class="author">{{this.$route.query.author}}</div>
           </div>
         </div>
       </div>
-      <div class="importer">{{this.$route.params.content }}</div>
+      <div class="importer">{{this.$route.query.content }}</div>
       <router-link to="/advice" class="yj">评论</router-link>
     </div>
   </div>
@@ -23,8 +23,38 @@ export default {
   data() {
     return {
       imgUrl: "",
-      img: this.$route.params.img
+      list: [],
+      img: this.$route.query.img
+      // detailData: {}
     };
+  },
+  created() {
+    var _this = this;
+    this.$axios
+      .get("static/data.json")
+      .then(res => {
+        if (res.data.code === "1") {
+          console.log("成功");
+          //    console.log(res.data.result)
+          this.list = res.data.result;
+          // this.list.some(item => {
+          //   // console.log(item.title)
+          //   // console.log(_this.$route.query.title)
+          //   if (item.title == _this.$route.query.title) {
+          //     this.detailData = {
+          //       title: item.title,
+          //       time: item.time,
+          //       author: item.author,
+          //       content: item.content
+          //     };
+          //     return true;
+          //   }
+          // });
+        }
+      })
+      .catch(error => {
+        console.log("失败");
+      });
   }
 };
 </script>
@@ -62,18 +92,18 @@ img {
   margin-top: 0.3em;
   color: rgb(160, 150, 150);
 }
-.author{
+.author {
   position: relative;
   margin-left: 2.2em;
 }
-.importer{
+.importer {
   font-size: 17px;
   line-height: 1.5em;
- letter-spacing:0.1em; 
- color: black
+  letter-spacing: 0.1em;
+  color: black;
 }
-.yj{
-  display: block; 
+.yj {
+  display: block;
   margin-top: 20px;
   color: rgb(160, 150, 150);
 }

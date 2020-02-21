@@ -10,19 +10,17 @@
       </mt-tab-item>
     </mt-navbar>
     <!-- 搜索框 -->
-    <div class="ssk">
-      <router-link to="/search">
-        <img src="../assets/ssk.png" alt />
-      </router-link>
-    </div>
+    <router-link to="/search">
+      <mt-search></mt-search>
+    </router-link>
+    
     <router-view />
+
   </div>
 </template>
-
 <script>
 export default {
   name: "Main",
-  components: {},
   data() {
     return {
       selected: "1"
@@ -39,7 +37,7 @@ export default {
 img {
   width: 100%;
 }
-.ssk {
-  margin: 0.5em;
+.mint-search {
+  height: 8vh;
 }
 </style>
