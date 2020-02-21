@@ -1,36 +1,54 @@
 <template>
   <div class="list">
-    <div class="tips" v-for="(item,index) in array" :key="item.title" @click="showDetail(index)">
-      <div v-if="item.status==='1'">
-        <!-- <router-link
+    <mt-loadmore
+      :top-method="loadTop"
+      :bottom-all-loaded="allLoaded"
+      :max-distance="100"
+      @top-status-change="handleTopChange"
+      ref="loadmore"
+    >
+      <div slot="top" class="mint-loadmore-top">
+        <span v-show="topStatus === 'pull'" :class="{ 'rotate': topStatus === 'drop' }">↓</span>
+        <span v-show="topStatus === 'loading'">Loading...</span>
+        <span v-show="topStatus === 'drop'">释放更新</span>
+      </div>
+
+      <div class="tips" v-for="(item,index) in array" :key="item.title" @click="showDetail(index)">
+        <div v-if="item.status==='1'">
+          <!-- <router-link
             :to="{name:'detail',query:{
                 title:item.title,content:item.content,time:item.time,author:item.author,img:item.img,
             }}"
-        >-->
-        <div class="info">
-          <div class="left">新闻</div>
-          <div class="right">{{ item.status_DISPLAY }}</div>
+          >-->
+          <div class="info">
+            <div class="left">新闻</div>
+            <div class="right">{{ item.status_DISPLAY }}</div>
+          </div>
+          <div class="con">
+            <div class="yuan"></div>
+            <div class="titl">{{ item.title }}</div>
+          </div>
+          <div class="au">
+            <div class="author">{{ item.author }}</div>
+            <div class="time">{{ item.time }}</div>
+          </div>
+          <!-- </router-link> -->
         </div>
-        <div class="con">
-          <div class="yuan"></div>
-          <div class="titl">{{ item.title }}</div>
-        </div>
-        <div class="au">
-          <div class="author">{{ item.author }}</div>
-          <div class="time">{{ item.time }}</div>
-        </div>
-        <!-- </router-link> -->
       </div>
-    </div>
+    </mt-loadmore>
   </div>
 </template>
 <script>
+import { Loadmore } from "mint-ui";
 export default {
   name: "finish",
   data() {
     return {
       list: [],
-      array: []
+      array: [],
+
+      allLoaded: false,
+      topStatus: ""
     };
   },
   methods: {
@@ -46,6 +64,24 @@ export default {
         }
       });
       // console.log(this.list[index].title)
+    },
+
+    loadTop: function() {
+      // 刷新数据的操作
+      setTimeout(() => {
+        //  console.log(this.list[0])
+        var _this = this;
+        let firstValue = _this.list[0];
+        console.log(this.list[0]);
+        for (let i = 1; i <= 10; i++) {
+          this.list.unshift(firstValue - i);
+        }
+        this.$refs.loadmore.onTopLoaded();
+      }, 1500);
+    },
+
+    handleTopChange: function(status) {
+      this.topStatus = status;
     }
   },
 

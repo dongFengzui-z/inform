@@ -13,9 +13,8 @@
     <router-link to="/search">
       <mt-search></mt-search>
     </router-link>
-    
-    <router-view />
 
+    <router-view />
   </div>
 </template>
 <script>
@@ -25,7 +24,8 @@ export default {
     return {
       selected: "1"
     };
-  }
+  },
+  methods: {}
 };
 </script>
 <style  scoped>
